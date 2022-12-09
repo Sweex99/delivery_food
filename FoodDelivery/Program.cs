@@ -10,9 +10,25 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+    {
+        options.SignIn.RequireConfirmedAccount     = false;
+        options.SignIn.RequireConfirmedEmail       = false;
+        options.SignIn.RequireConfirmedPhoneNumber = false;
+        options.Password.RequireDigit              = false;
+        options.Password.RequiredLength            = 8;
+        options.Password.RequireNonAlphanumeric    = false;
+        options.Password.RequireUppercase          = false;
+        options.Password.RequireLowercase          = false;
+        options.Lockout.AllowedForNewUsers         = false;
+        options.User.RequireUniqueEmail            = true;
+
+        options.User.AllowedUserNameCharacters =
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+@._";
+    })
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -40,5 +56,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+await app.CreateDefaultIdentity();
 
 app.Run();
