@@ -1,0 +1,22 @@
+﻿@model CartViewModel
+
+@{
+    ViewData["Title"] = "Cart";
+}
+
+@foreach (var food in Model!.Foods)
+{
+    <div>@food.Name x/@food.Amount - @food.Price</div>
+}
+
+@if (Model!.Foods.Any())
+{
+    <div>Total price: @Model!.TotalPrice</div>
+    <form class="form-inline" asp-controller="Cart" asp-action="Buy" method="post">
+        <button type="submit" class="btn btn-primary">Buy</button>
+    </form>
+}
+else
+{
+    <div>Cart is empty</div>
+}

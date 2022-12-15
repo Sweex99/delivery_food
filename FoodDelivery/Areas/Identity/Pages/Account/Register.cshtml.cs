@@ -94,6 +94,10 @@ namespace FoodDelivery.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            [Display(Name = "Is courier?")]
+            public bool IsCourier { get; set; }
         }
 
 
@@ -118,6 +122,11 @@ namespace FoodDelivery.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    if (Input.IsCourier)
+                    {
+                        await _userManager.AddToRoleAsync(user, "Courier");
+                    }
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);

@@ -3,6 +3,7 @@ using System;
 using FoodDelivery.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,19 +11,26 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FoodDelivery.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221214231804_AddOrderAndFoodEntities")]
+    partial class AddOrderAndFoodEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.11");
 
             modelBuilder.Entity("FoodDelivery.Data.Cart", b =>
                 {
-                    b.Property<string>("UserId")
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId1")
                         .HasColumnType("TEXT");
 
                     b.HasKey("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("Carts");
                 });
@@ -35,16 +43,7 @@ namespace FoodDelivery.Data.Migrations
                     b.Property<int>("FoodId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Amount")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CartUserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.HasKey("CartId", "FoodId");
-
-                    b.HasIndex("CartUserId");
 
                     b.HasIndex("FoodId");
 
@@ -56,9 +55,6 @@ namespace FoodDelivery.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -78,9 +74,6 @@ namespace FoodDelivery.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("OrderId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Amount")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("FoodId", "OrderId");
@@ -110,21 +103,10 @@ namespace FoodDelivery.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("CourierId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("OrderStatusId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CourierId");
-
-                    b.HasIndex("CustomerId");
 
                     b.HasIndex("OrderStatusId");
 
@@ -327,9 +309,7 @@ namespace FoodDelivery.Data.Migrations
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("User");
                 });
@@ -338,7 +318,7 @@ namespace FoodDelivery.Data.Migrations
                 {
                     b.HasOne("FoodDelivery.Data.Cart", "Cart")
                         .WithMany("CartFoods")
-                        .HasForeignKey("CartUserId")
+                        .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -374,25 +354,11 @@ namespace FoodDelivery.Data.Migrations
 
             modelBuilder.Entity("FoodDelivery.Data.Order", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Courier")
-                        .WithMany()
-                        .HasForeignKey("CourierId");
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FoodDelivery.Data.LuOrderStatus", "OrderStatus")
                         .WithMany("Orders")
                         .HasForeignKey("OrderStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Courier");
-
-                    b.Navigation("Customer");
 
                     b.Navigation("OrderStatus");
                 });

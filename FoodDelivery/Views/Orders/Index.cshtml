@@ -1,0 +1,44 @@
+﻿@using FoodDelivery.Data
+@model IEnumerable<OrderViewModel>
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<div class="container">
+    <div class="row">
+        @foreach (var order in Model)
+        {
+            <div class="card m-2" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Order #@order.Id</h5>
+                    <h5 class="card-text">For @order.CustomerName</h5>
+                    @foreach (var item in order.Items)
+                    {
+                        <p class="card-text">@item</p>
+                    }
+                    <p class="card-text">items number: @order.ItemsCount</p>
+                    @if (@order.CourierName is not null)
+                    {
+                        <p class="card-text">Courier: @order.CourierName</p>
+                    }
+                    <span class="badge badge-dark">
+                        <p class="text-secondary">Price: @order.Price $</p>
+                    </span><br/>
+                    @if (order.Status == OrderStatus.New)
+                    {
+                        <form class="form-inline" asp-controller="Orders" asp-action="Take" asp-route-id="@order.Id" method="post">
+                            <button type="submit" class="btn btn-primary">Take</button>
+                        </form>
+                    }
+                    @if (order.Status == OrderStatus.InProgress)
+                    {
+                        <form class="form-inline" asp-controller="Orders" asp-action="Delivered" asp-route-id="@order.Id" method="post">
+                            <button type="submit" class="btn btn-success">Delivered</button>
+                        </form>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>

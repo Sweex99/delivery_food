@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using FoodDelivery.Data;
 using Microsoft.AspNetCore.Mvc;
 using FoodDelivery.Models;
 
@@ -6,10 +7,12 @@ namespace FoodDelivery.Controllers;
 
 public class HomeController : Controller
 {
+    private readonly ApplicationDbContext _context;
     private readonly ILogger<HomeController> _logger;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ApplicationDbContext context, ILogger<HomeController> logger)
     {
+        _context = context;
         _logger = logger;
     }
 

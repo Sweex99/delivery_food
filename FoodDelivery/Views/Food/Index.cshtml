@@ -1,0 +1,25 @@
+﻿@model IEnumerable<FoodViewModel>
+
+@{
+    ViewData["Title"] = "Food";
+}
+
+<div class="container">
+    <div class="row">
+        @foreach (var food in Model)
+        {
+            <div class="card m-2" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">@food.Name</h5>
+                    <p class="card-text">@food.Description</p>
+                    <form class="form-inline" asp-controller="Food" asp-action="ToCart" asp-route-id="@food.Id" method="post">
+                        <button type="submit" class="btn btn-primary">To Cart</button>
+                    </form>
+                    <span class="badge badge-dark">
+                        <p class="text-secondary">@food.Price $</p>
+                    </span>
+                </div>
+            </div>
+        }
+    </div>
+</div>

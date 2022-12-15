@@ -3,6 +3,7 @@ using System;
 using FoodDelivery.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FoodDelivery.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221215003955_AddedDescriptionForFood")]
+    partial class AddedDescriptionForFood
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.11");
@@ -33,9 +35,6 @@ namespace FoodDelivery.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("FoodId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Amount")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CartUserId")
@@ -80,9 +79,6 @@ namespace FoodDelivery.Data.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Amount")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("FoodId", "OrderId");
 
                     b.HasIndex("OrderId");
@@ -110,21 +106,10 @@ namespace FoodDelivery.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("CourierId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("OrderStatusId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CourierId");
-
-                    b.HasIndex("CustomerId");
 
                     b.HasIndex("OrderStatusId");
 
@@ -374,25 +359,11 @@ namespace FoodDelivery.Data.Migrations
 
             modelBuilder.Entity("FoodDelivery.Data.Order", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Courier")
-                        .WithMany()
-                        .HasForeignKey("CourierId");
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FoodDelivery.Data.LuOrderStatus", "OrderStatus")
                         .WithMany("Orders")
                         .HasForeignKey("OrderStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Courier");
-
-                    b.Navigation("Customer");
 
                     b.Navigation("OrderStatus");
                 });
