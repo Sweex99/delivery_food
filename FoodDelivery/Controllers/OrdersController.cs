@@ -1,4 +1,5 @@
 ﻿using FoodDelivery.Data;
+using FoodDelivery.Extensions;
 using FoodDelivery.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -19,26 +20,35 @@ public class OrdersController : Controller
     }
 
     [HttpGet]
-    [Authorize(Roles = "Courier")]
-    public IActionResult Index()
+    [Authorize(Roles = "Courier,Admin")]
+    public async Task<IActionResult> Index()
     {
-        var result = _context
+        var query = _context
             .Orders
             .Include(x => x.Courier)
+            .Include(x => x.OrderStatus)
             .Include(x => x.Customer)
             .Include(x => x.FoodOrders)
             .ThenInclude(x => x.Food)
-            .Where(x => x.OrderStatusId != OrderStatus.Delivered)
+            .AsQueryable();
+
+        if (await _userManager.IsInRolesAsync(User, "Courier"))
+        {
+            query = query.Where(x => x.OrderStatusId != OrderStatus.Delivered);
+        }
+
+        var result = await query
             .Select(x => new OrderViewModel
             {
                 Id = x.Id,
                 CustomerName = x.Customer.UserName,
-                CourierName = x.Courier.UserName,
-                Status = x.OrderStatusId,
+                Courier = x.Courier != null ? new() { Id = x.Courier.Id, Name = x.Courier.UserName } : null,
+                Status = new() { Id = x.OrderStatus.Id, Name = x.OrderStatus.Name },
                 ItemsCount = x.FoodOrders.Count,
                 Price = x.FoodOrders.Sum(foodOrder => foodOrder.Food.Price * foodOrder.Amount),
                 Items = x.FoodOrders.Select(foodOrder => $"{foodOrder.Food.Name} x{foodOrder.Amount}")
-            });
+            })
+            .ToListAsync();
 
         return View(result);
     }

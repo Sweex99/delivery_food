@@ -1,0 +1,27 @@
+﻿@model FoodDelivery.Models.EditUserViewModel
+
+@{
+    ViewData["Title"] = "Edit user";
+}
+
+<form class="form-inline" asp-area="Identity" asp-controller="Users" asp-action="Edit" method="post">
+    <input asp-for="Id" type="hidden">
+    <div class="form-floating">
+        <select asp-for="Role" class="custom-select form-control">
+            <option value="">User</option>
+            <option value="Courier">Courier</option>
+            <option value="Admin">Admin</option>
+        </select>
+        <label asp-for="Role" class="form-label">Role</label>
+    </div>
+    <div>
+        <div class="checkbox">
+            <label asp-for="IsLocked" class="form-label">
+                <input asp-for="IsLocked" type="checkbox" class="form-check-input"/>
+                Is locked?
+            </label>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

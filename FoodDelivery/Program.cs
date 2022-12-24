@@ -27,6 +27,11 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+@._";
     })
     .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.ConfigureApplicationCookie(opts =>
+{
+    opts.LoginPath = "/Identity/Account/Login";
+
+});
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
@@ -52,6 +57,9 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapControllerRoute(
+    name: "areaRoute",
+    pattern: "{area:exists}/{controller}/{action=Index}/{id?}");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
